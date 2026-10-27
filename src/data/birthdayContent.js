@@ -211,6 +211,16 @@ export const birthdayData = {
         image: "/photos/rathika-game-5.jpg",
         date: "Foodie Joy",
       },
+      {
+        id: 13,
+        caption: "You & Me, Forever 💗",
+        subCaption: "I love you so much, Honey! By your Kadambari",
+        rotation: "-2deg",
+        sticker: "💋",
+        tapeColor: "bg-pink-300/80",
+        image: "/photos/kadambari-and-rathika.jpg",
+        date: "Us Forever",
+      },
     ],
   },
 
@@ -293,7 +303,7 @@ export const birthdayData = {
       "Keep smiling, Honey. Keep growing, Rathi. Keep being YOU.",
       "You deserve so many beautiful things, and I genuinely hope life surprises you with more happiness than you ever imagined.",
       "Happy Birthday, my Honey. 🎂💗",
-      "With lots of love and the warmest wishes,\nFor my special Rathi. 🌷"
+      "With lots of love, endless hugs, and the sweetest kisses 💋😘💋,\nBy your Kadambariiiiiiiii 🌷💗"
     ],
     hugButtonText: "Sending You a Million Hugs 🫂",
   },
@@ -302,6 +312,10 @@ export const birthdayData = {
     heading: "HAPPY BIRTHDAY, HONEYYYY! 💗🎂",
     quote: "May your life be as beautiful as your heart, as limitless as your dreams, and as full of love as you deserve.",
     closing: "Love you, Rathi! Keep smiling, keep shining, and keep being your wonderful self. 🦋💗",
+    ourPhoto: "/photos/kadambari-and-rathika.jpg",
+    ourPhotoCaption: "You & Me, Hand in Hand 💗",
+    loveDeclaration: "I LOVE YOUUUUUUU 💋😘💋😘",
+    signature: "By your Kadambariiiiiiiii 💖",
     replayButton: "Celebrate Again! 🎉",
     backToTopButton: "Back to the beginning ↑",
   },

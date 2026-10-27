@@ -1,12 +1,13 @@
-import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { Sparkles, Heart, ArrowUp, PartyPopper, Cake } from 'lucide-react';
-import { playSparkleSound, playPopSound } from '../utils/sound';
+import { Sparkles, Heart, ArrowUp, PartyPopper } from 'lucide-react';
+import { playSparkleSound, playPopSound, playHugSound } from '../utils/sound';
 import { birthdayData } from '../data/birthdayContent';
 
 export default function FinalCelebration({ onReplayCelebration }) {
   const { finalCelebration } = birthdayData;
+  const [kissBursts, setKissBursts] = useState([]);
 
   const launchFireworks = () => {
     playSparkleSound();
@@ -15,24 +16,48 @@ export default function FinalCelebration({ onReplayCelebration }) {
 
     (function frame() {
       confetti({
-        particleCount: 4,
+        particleCount: 5,
         angle: 60,
-        spread: 55,
+        spread: 60,
         origin: { x: 0, y: 0.7 },
-        colors: ['#FF5C93', '#FFD6E7', '#FFD700', '#E7DFFF'],
+        colors: ['#FF5C93', '#FFD6E7', '#FFD700', '#E7DFFF', '#E11D48'],
       });
       confetti({
-        particleCount: 4,
+        particleCount: 5,
         angle: 120,
-        spread: 55,
+        spread: 60,
         origin: { x: 1, y: 0.7 },
-        colors: ['#FF5C93', '#FFD6E7', '#FFD700', '#E7DFFF'],
+        colors: ['#FF5C93', '#FFD6E7', '#FFD700', '#E7DFFF', '#E11D48'],
       });
 
       if (Date.now() < end) {
         requestAnimationFrame(frame);
       }
     })();
+  };
+
+  const handlePhotoKissClick = () => {
+    playHugSound();
+    playSparkleSound();
+
+    confetti({
+      particleCount: 60,
+      spread: 75,
+      origin: { y: 0.6 },
+      colors: ['#FF5C93', '#FF8CB4', '#E11D48', '#FFC7AD'],
+    });
+
+    const newKisses = Array.from({ length: 14 }, (_, i) => ({
+      id: Date.now() + i,
+      x: 15 + Math.random() * 70,
+      y: 60 + Math.random() * 20,
+      emoji: ['💋', '😘', '💗', '💖', '🥰'][i % 5],
+    }));
+
+    setKissBursts((prev) => [...prev, ...newKisses]);
+    setTimeout(() => {
+      setKissBursts((prev) => prev.filter((k) => !newKisses.includes(k)));
+    }, 2400);
   };
 
   const handleCelebrateAgain = () => {
@@ -51,8 +76,22 @@ export default function FinalCelebration({ onReplayCelebration }) {
   return (
     <section 
       id="final-celebration-section" 
-      className="relative min-h-[90svh] py-24 px-4 flex flex-col items-center justify-center text-center bg-gradient-to-b from-[#FFF8F0] via-[#E7DFFF]/40 to-[#FFD6E7]/70 overflow-hidden"
+      className="relative min-h-[100svh] py-20 px-4 flex flex-col items-center justify-center text-center bg-gradient-to-b from-[#FFF8F0] via-[#E7DFFF]/40 to-[#FFD6E7]/80 overflow-hidden"
     >
+      {/* Floating Kisses & Hearts Overlay */}
+      {kissBursts.map((kiss) => (
+        <motion.div
+          key={kiss.id}
+          initial={{ opacity: 1, scale: 0.6, y: 0 }}
+          animate={{ opacity: 0, scale: 2, y: -260 }}
+          transition={{ duration: 2.2, ease: "easeOut" }}
+          style={{ left: `${kiss.x}%` }}
+          className="fixed bottom-24 z-50 pointer-events-none text-4xl sm:text-5xl select-none"
+        >
+          {kiss.emoji}
+        </motion.div>
+      ))}
+
       {/* Floating Pastel Balloons */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {['🎈', '🌸', '✨', '🎈', '💖', '🎈'].map((item, idx) => (
@@ -86,22 +125,77 @@ export default function FinalCelebration({ onReplayCelebration }) {
         whileInView={{ opacity: 1, scale: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="cute-card relative z-20 max-w-2xl mx-auto p-8 sm:p-12 rounded-3xl text-center shadow-2xl border-2 border-pink-200/90 bg-white/95"
+        className="cute-card relative z-20 max-w-2xl mx-auto p-6 sm:p-12 rounded-3xl text-center shadow-2xl border-2 border-pink-200/90 bg-white/95"
       >
         {/* Crown Badge */}
-        <div className="w-16 h-16 mx-auto rounded-full bg-pink-100 flex items-center justify-center text-3xl mb-6 shadow-inner border border-pink-200 animate-bounce">
+        <div className="w-16 h-16 mx-auto rounded-full bg-pink-100 flex items-center justify-center text-3xl mb-5 shadow-inner border border-pink-200 animate-bounce">
           👑
         </div>
 
         {/* Big Playful Heading */}
-        <h2 className="font-['Fredoka'] text-3xl sm:text-4xl md:text-5xl text-[#FF5C93] font-bold tracking-tight mb-6 drop-shadow-sm leading-tight">
+        <h2 className="font-['Fredoka'] text-3xl sm:text-4xl md:text-5xl text-[#FF5C93] font-bold tracking-tight mb-4 drop-shadow-sm leading-tight">
           {finalCelebration.heading}
         </h2>
 
         {/* Loving Blessing Quote */}
-        <p className="font-['Comfortaa'] text-lg sm:text-xl md:text-2xl text-[#4A2835] font-bold leading-relaxed mb-6">
+        <p className="font-['Comfortaa'] text-base sm:text-lg md:text-xl text-[#4A2835] font-bold leading-relaxed mb-6">
           “{finalCelebration.quote}”
         </p>
+
+        {/* SPECIAL GRAND FINALE: RATHIKA & KADAMBARI'S PHOTO */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          onClick={handlePhotoKissClick}
+          className="relative group my-6 cursor-pointer select-none"
+        >
+          {/* Glowing Aura Behind Photo */}
+          <div className="absolute -inset-2.5 bg-gradient-to-r from-pink-400 via-rose-400 to-amber-300 rounded-3xl blur-xl opacity-65 group-hover:opacity-90 transition-opacity" />
+
+          {/* Polaroid Frame */}
+          <div className="polaroid-frame relative p-4 sm:p-5 pb-6 rounded-3xl bg-white shadow-2xl border-4 border-white max-w-[320px] sm:max-w-[380px] mx-auto transform hover:scale-102 transition-all duration-300">
+            {/* Washi tape on top */}
+            <div className="washi-tape absolute -top-3 left-1/2 -translate-x-1/2 w-36 h-7 bg-pink-300/90 rounded-sm shadow-sm flex items-center justify-center z-10">
+              <span className="text-xs font-['Caveat'] text-pink-800 font-bold">
+                Rathika & Kadambari 💗
+              </span>
+            </div>
+
+            {/* Corner Badges */}
+            <div className="absolute -bottom-3 -right-3 text-3xl z-10 animate-bounce">
+              💋
+            </div>
+            <div className="absolute -top-3 -left-3 text-3xl z-10">
+              💖
+            </div>
+
+            {/* Photo Canvas */}
+            <div className="relative aspect-[3.8/4.5] w-full rounded-2xl overflow-hidden bg-pink-50 shadow-inner border border-pink-100">
+              <img
+                src={finalCelebration.ourPhoto}
+                alt="Kadambari and Rathika"
+                className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+              />
+              {/* Overlay with tap hint */}
+              <div className="absolute bottom-2 inset-x-0 text-center px-2">
+                <span className="inline-block px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-[#FF5C93] font-['Caveat'] text-base sm:text-lg font-bold shadow-md">
+                  Tap for sweet kisses! 💋😘
+                </span>
+              </div>
+            </div>
+
+            {/* Passionate Dedication & Kissing Emojis */}
+            <div className="mt-4 text-center space-y-1">
+              <p className="font-['Fredoka'] text-2xl sm:text-3xl text-rose-600 font-bold tracking-tight">
+                {finalCelebration.loveDeclaration}
+              </p>
+              <p className="font-['Caveat'] text-2xl sm:text-3xl text-[#FF5C93] font-bold">
+                {finalCelebration.signature}
+              </p>
+            </div>
+          </div>
+        </motion.div>
 
         {/* Heartfelt Closing Note */}
         <div className="py-4 px-6 rounded-2xl bg-gradient-to-r from-pink-50 via-rose-50 to-pink-50 border border-pink-200/80 mb-8 shadow-inner">
@@ -131,9 +225,12 @@ export default function FinalCelebration({ onReplayCelebration }) {
       </motion.div>
 
       {/* Sweet Footer Signature */}
-      <div className="relative z-10 mt-12 text-center text-xs font-['Comfortaa'] text-[#7A4B5D] font-semibold">
-        <p className="flex items-center justify-center gap-1">
-          Crafted with boundless affection for Rathika (My Honey) 💗
+      <div className="relative z-10 mt-10 text-center text-xs font-['Comfortaa'] text-[#7A4B5D] font-semibold space-y-1">
+        <p className="flex items-center justify-center gap-1.5 text-sm font-bold text-[#FF5C93]">
+          Made with all my heart for Honey 💗 By Kadambari 💋
+        </p>
+        <p className="text-[11px] text-[#7A4B5D]">
+          Forever & Always • 2026
         </p>
       </div>
     </section>
