@@ -151,7 +151,22 @@ export const birthdayData = {
         image: "/photos/rathika-6.jpg",
         date: "Pure Royalty",
       },
+      {
+        id: 7,
+        caption: "My Honey, My Home 🏡💗",
+        subCaption: "You are where my heart belongs forever",
+        rotation: "-2deg",
+        sticker: "💖",
+        tapeColor: "bg-pink-300/80",
+        image: "/photos/rathika-7.jpg",
+        date: "Always & Forever",
+      },
     ],
+  },
+
+  loveBanner: {
+    shout: "I LOVE YOUUUUUUU HONEYYYYYYYYYYYYYYY 💗",
+    tagline: "My Honey, My Home 🏡✨ Forever and always.",
   },
 
   futureWishes: {

@@ -8,6 +8,8 @@ import LoveLetter from './components/LoveLetter';
 import FinalCelebration from './components/FinalCelebration';
 import MusicPlayer from './components/MusicPlayer';
 import FloatingDecorations from './components/FloatingDecorations';
+import FloatingBalloonsBackground from './components/FloatingBalloonsBackground';
+import LoveDeclarationBanner from './components/LoveDeclarationBanner';
 import StoryProgress from './components/StoryProgress';
 
 export default function App() {
@@ -28,7 +30,10 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] text-[#4A2835] font-['Nunito'] relative selection:bg-pink-200 selection:text-[#FF5C93]">
+    <div className="min-h-screen bg-[#FFF8F0] text-[#4A2835] font-['Nunito'] relative selection:bg-pink-200 selection:text-[#FF5C93] overflow-x-hidden">
+      {/* Continuous Floating Balloons Moving Behind the Entire Screen */}
+      <FloatingBalloonsBackground />
+
       {/* Floating Interactive Hearts, Stars, Butterflies */}
       <FloatingDecorations />
 
@@ -42,7 +47,7 @@ export default function App() {
       {hasOpenedSurprise && <StoryProgress />}
 
       {/* CHAPTER 1: WELCOME SCREEN & COVER PORTRAIT */}
-      <div id="welcome-section">
+      <div id="welcome-section" className="relative z-10">
         <WelcomeScreen 
           hasOpened={hasOpenedSurprise}
           onOpenSurprise={handleOpenSurprise}
@@ -57,6 +62,9 @@ export default function App() {
 
           {/* CHAPTER 3: WHY YOU ARE SO SPECIAL */}
           <SpecialCards />
+
+          {/* PASSIONATE LOVE CONFESSION BANNER */}
+          <LoveDeclarationBanner />
 
           {/* CHAPTER 4: PHOTO SCRAPBOOK */}
           <PhotoScrapbook />
