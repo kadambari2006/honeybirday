@@ -1,13 +1,67 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, X, Heart, Sparkles, ZoomIn, Camera } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, Heart, Sparkles, ZoomIn, Camera, ImagePlus, Trash2 } from 'lucide-react';
 import { playPopSound, playSparkleSound } from '../utils/sound';
 import { birthdayData } from '../data/birthdayContent';
 
 export default function PhotoScrapbook() {
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(null);
   const { scrapbook } = birthdayData;
-  const photos = scrapbook.photos;
+  const [photosList, setPhotosList] = useState(scrapbook.photos);
+
+  // Load any user-uploaded photos from localStorage
+  useEffect(() => {
+    try {
+      const savedCustom = localStorage.getItem('rathika_custom_photos');
+      if (savedCustom) {
+        const parsed = JSON.parse(savedCustom);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setPhotosList(prev => {
+            // Keep first cover photo and merge saved custom photos
+            const first = prev[0];
+            return [first, ...parsed];
+          });
+        }
+      }
+    } catch (e) {
+      // Ignore
+    }
+  }, []);
+
+  const handleFileUpload = (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    playSparkleSound();
+    const newPhotos = [];
+
+    Array.from(files).forEach((file, idx) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const photoObj = {
+          id: Date.now() + idx,
+          caption: `My Honey 💗 #${photosList.length + idx + 1}`,
+          subCaption: "Beautiful memory of Rathika",
+          rotation: `${((idx % 5) - 2) * 1.5}deg`,
+          sticker: ['🌸', '✨', '🦋', '🍯', '⭐', '🎀'][idx % 6],
+          tapeColor: ['bg-pink-300/80', 'bg-purple-200/80', 'bg-amber-200/80', 'bg-rose-200/80'][idx % 4],
+          image: event.target.result,
+          date: "Special Moment",
+          isCustom: true,
+        };
+
+        setPhotosList((current) => {
+          const updated = [...current, photoObj];
+          try {
+            const customOnly = updated.filter(p => p.isCustom);
+            localStorage.setItem('rathika_custom_photos', JSON.stringify(customOnly.slice(0, 10)));
+          } catch (err) {}
+          return updated;
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+  };
 
   const openLightbox = (index) => {
     setSelectedPhotoIndex(index);
@@ -21,13 +75,13 @@ export default function PhotoScrapbook() {
 
   const nextPhoto = (e) => {
     e.stopPropagation();
-    setSelectedPhotoIndex((prev) => (prev + 1) % photos.length);
+    setSelectedPhotoIndex((prev) => (prev + 1) % photosList.length);
     playPopSound();
   };
 
   const prevPhoto = (e) => {
     e.stopPropagation();
-    setSelectedPhotoIndex((prev) => (prev - 1 + photos.length) % photos.length);
+    setSelectedPhotoIndex((prev) => (prev - 1 + photosList.length) % photosList.length);
     playPopSound();
   };
 
@@ -37,7 +91,7 @@ export default function PhotoScrapbook() {
       className="relative py-20 px-4 max-w-6xl mx-auto overflow-hidden"
     >
       {/* Header */}
-      <div className="text-center mb-12">
+      <div className="text-center mb-10">
         <motion.div
           initial={{ opacity: 0, y: -15 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -68,23 +122,35 @@ export default function PhotoScrapbook() {
           {scrapbook.subtitle}
         </motion.p>
 
-        {/* Helpful Tip Pill for Custom Photos */}
-        <div className="mt-3 inline-block">
+        {/* Action button to add more photos directly in the browser */}
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+          <label className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white hover:bg-pink-50 text-[#FF5C93] font-['Comfortaa'] text-xs sm:text-sm font-bold border-2 border-dashed border-pink-300 shadow-sm hover:shadow-md transition-all cursor-pointer min-h-[42px]">
+            <ImagePlus className="w-4 h-4 group-hover:scale-110 transition-transform" />
+            <span>Add More Photos of Rathika 📸</span>
+            <input 
+              type="file" 
+              multiple 
+              accept="image/*" 
+              onChange={handleFileUpload} 
+              className="hidden" 
+            />
+          </label>
+
           <span className="text-[11px] font-['Comfortaa'] text-pink-500 bg-pink-100/70 border border-pink-200/60 px-3 py-1 rounded-full">
-            💡 Tip: Tap any polaroid to zoom into the full memory!
+            💡 Tap any polaroid to zoom in!
           </span>
         </div>
       </div>
 
       {/* Scrapbook Polaroid Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 px-2 sm:px-6">
-        {photos.map((item, index) => (
+        {photosList.map((item, index) => (
           <motion.div
             key={item.id}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: index * 0.1 }}
+            transition={{ delay: index * 0.08 }}
             className="flex flex-col items-center"
           >
             {/* Polaroid Card */}
@@ -115,7 +181,6 @@ export default function PhotoScrapbook() {
                   loading="lazy"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   onError={(e) => {
-                    // Safe fallback if local file is missing
                     e.target.src = item.fallback || "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?auto=format&fit=crop&w=600&q=80";
                   }}
                 />
@@ -149,7 +214,7 @@ export default function PhotoScrapbook() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4"
             onClick={closeLightbox}
           >
             {/* Close Button */}
@@ -190,30 +255,30 @@ export default function PhotoScrapbook() {
             >
               <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden bg-pink-50 shadow-md">
                 <img
-                  src={photos[selectedPhotoIndex].image}
-                  alt={photos[selectedPhotoIndex].caption}
+                  src={photosList[selectedPhotoIndex]?.image}
+                  alt={photosList[selectedPhotoIndex]?.caption}
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    e.target.src = photos[selectedPhotoIndex].fallback || "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?auto=format&fit=crop&w=600&q=80";
+                    e.target.src = photosList[selectedPhotoIndex]?.fallback || "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?auto=format&fit=crop&w=600&q=80";
                   }}
                 />
               </div>
 
               <div className="mt-4 text-center">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-100 text-[#FF5C93] text-xs font-['Comfortaa'] font-bold mb-2">
-                  <span>{photos[selectedPhotoIndex].sticker}</span>
-                  <span>{photos[selectedPhotoIndex].date}</span>
+                  <span>{photosList[selectedPhotoIndex]?.sticker}</span>
+                  <span>{photosList[selectedPhotoIndex]?.date}</span>
                 </div>
                 <h3 className="font-['Caveat'] text-3xl text-[#FF5C93] font-bold">
-                  {photos[selectedPhotoIndex].caption}
+                  {photosList[selectedPhotoIndex]?.caption}
                 </h3>
                 <p className="font-['Nunito'] text-sm text-[#7A4B5D] mt-1 font-semibold">
-                  {photos[selectedPhotoIndex].subCaption}
+                  {photosList[selectedPhotoIndex]?.subCaption}
                 </p>
               </div>
 
               <div className="mt-4 flex items-center justify-between w-full pt-3 border-t border-pink-100 text-xs text-[#7A4B5D] font-['Comfortaa']">
-                <span>Memory {selectedPhotoIndex + 1} of {photos.length}</span>
+                <span>Memory {selectedPhotoIndex + 1} of {photosList.length}</span>
                 <span className="flex items-center gap-1 text-[#FF5C93]">
                   <Heart className="w-3.5 h-3.5 fill-[#FF5C93]" />
                   For Rathika
