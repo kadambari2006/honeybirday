@@ -22,6 +22,7 @@ export default function StoryProgress({ activeSection }) {
     { id: 'welcome-section', label: 'Surprise', icon: '🎀' },
     { id: 'birthday-cake-section', label: 'Cake', icon: '🎂' },
     { id: 'special-cards-section', label: 'Special You', icon: '💌' },
+    { id: 'honey-traits-game', label: 'Pop Game', icon: '🎈' },
     { id: 'photo-scrapbook-section', label: 'Memories', icon: '📸' },
     { id: 'future-wishes-section', label: 'Wishes', icon: '🌈' },
     { id: 'love-letter-section', label: 'Letter', icon: '🌹' },

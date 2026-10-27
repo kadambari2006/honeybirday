@@ -10,6 +10,7 @@ import MusicPlayer from './components/MusicPlayer';
 import FloatingDecorations from './components/FloatingDecorations';
 import FloatingBalloonsBackground from './components/FloatingBalloonsBackground';
 import LoveDeclarationBanner from './components/LoveDeclarationBanner';
+import CharacterRevealGame from './components/CharacterRevealGame';
 import StoryProgress from './components/StoryProgress';
 
 export default function App() {
@@ -65,6 +66,9 @@ export default function App() {
 
           {/* PASSIONATE LOVE CONFESSION BANNER */}
           <LoveDeclarationBanner />
+
+          {/* INTERACTIVE GAME: POP BALLOONS & REVEAL CHARACTER TRAITS */}
+          <CharacterRevealGame />
 
           {/* CHAPTER 4: PHOTO SCRAPBOOK */}
           <PhotoScrapbook />
