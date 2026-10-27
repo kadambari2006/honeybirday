@@ -9,24 +9,20 @@ export default function PhotoScrapbook() {
   const { scrapbook } = birthdayData;
   const [photosList, setPhotosList] = useState(scrapbook.photos);
 
-  // Load any user-uploaded photos from localStorage
+  // Load any extra user-uploaded photos from localStorage
   useEffect(() => {
     try {
       const savedCustom = localStorage.getItem('rathika_custom_photos');
       if (savedCustom) {
         const parsed = JSON.parse(savedCustom);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          setPhotosList(prev => {
-            // Keep first cover photo and merge saved custom photos
-            const first = prev[0];
-            return [first, ...parsed];
-          });
+          setPhotosList([...scrapbook.photos, ...parsed]);
         }
       }
     } catch (e) {
       // Ignore
     }
-  }, []);
+  }, [scrapbook.photos]);
 
   const handleFileUpload = (e) => {
     const files = e.target.files;

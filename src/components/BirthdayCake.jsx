@@ -243,8 +243,14 @@ export default function BirthdayCake() {
               transition={{ duration: 0.6 }}
               className="cute-card max-w-lg mx-auto p-6 sm:p-8 rounded-3xl text-center shadow-xl border-2 border-pink-200 mt-2"
             >
-              <div className="w-12 h-12 mx-auto rounded-full bg-pink-100 flex items-center justify-center text-2xl mb-3 shadow-inner">
-                ✨
+              {/* Birthday Girl Surprise Wish Photo */}
+              <div className="relative w-36 h-36 mx-auto mb-4 rounded-2xl overflow-hidden shadow-md border-4 border-white rotate-2">
+                <img
+                  src={cake.wishPhoto}
+                  alt="Rathika Making a Wish"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-1 right-1 text-base">🎈</div>
               </div>
 
               <h3 className="font-['Fredoka'] text-2xl sm:text-3xl text-[#FF5C93] font-bold mb-3">
